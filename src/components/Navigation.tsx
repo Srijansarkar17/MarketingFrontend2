@@ -12,6 +12,11 @@ import {
   MobileNavMenu,
 } from './ui/resizable-navbar';
 
+interface NavItem {
+  name: string;
+  link: string;
+}
+
 const Navigation: React.FC = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -58,13 +63,15 @@ const Navigation: React.FC = () => {
     };
   }, []);
 
-  const navItems = [
+  const navItems: NavItem[] = [
     { name: 'Home', link: '/home' },
     { name: 'Command Center', link: '/command-center' },
     { name: 'Performance', link: '/performance' },
     { name: 'Audience Intel', link: '/audience' },
     { name: 'Auto Create', link: '/auto-create' }
   ];
+
+  // Create a handler for each nav item if onItemClick doesn't pass the link
 
   const handleNavClick = (link: string) => {
     navigate(link);
@@ -85,10 +92,12 @@ const Navigation: React.FC = () => {
     navigate('/');
   };
 
-  // Wrapper function for NavItems onItemClick
-  const handleNavItemClick = (link: string) => {
-    navigate(link);
-  };
+  // If NavItems component expects items with onClick handlers instead of onItemClick
+  // We need to transform our data structure
+  const transformedNavItems = navItems.map(item => ({
+    ...item,
+    onClick: () => navigate(item.link)
+  }));
 
   return (
     <Navbar>
@@ -97,8 +106,7 @@ const Navigation: React.FC = () => {
         <NavbarLogo />
         {isLoggedIn && (
           <NavItems 
-            items={navItems} 
-            onItemClick={handleNavItemClick}
+            items={transformedNavItems}
           />
         )}
         <div className="flex items-center gap-4">
