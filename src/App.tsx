@@ -1,80 +1,121 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import {  PublicRoute } from './components/ProtectedRoute';
+import { ProtectedRoute, PublicRoute } from './components/ProtectedRoute';
+
+import CommandCenter from './pages/CommandCenter';
 import LoginPage from './pages/Login';
 import SignUpPage from './pages/Signup';
 import Home from './pages/Home';
+import OnboardingPage from './components/OnBoarding';
+import AutoCreate from './pages/AutoCreate';
+import AdSurveillance from './components/AdSurveillance';
+import AdDetailPage from './pages/AdDetailPage';
+import VideoAnalysis from './pages/VideoAnalysis';
 
+
+/* ✅ NEW PAGE IMPORT */
+import TargetingIntel from './pages/targetingIntel';
 
 function App() {
   return (
     <Router>
       <Routes>
         {/* LANDING PAGE - Public route */}
-        <Route 
-          path="/" 
-          element={<Home />} 
-        />
+        <Route path="/" element={<Home />} />
 
-        {/* PUBLIC ROUTES - Redirect to /command-center if already logged in */}
-        <Route 
-          path="/login" 
+        {/* Ad Detail Page */}
+        <Route path="/ads/:id" element={<AdDetailPage />} />
+
+        {/* PUBLIC ROUTES */}
+        <Route
+          path="/login"
           element={
             <PublicRoute>
               <LoginPage />
             </PublicRoute>
-          } 
+          }
         />
-        
-        <Route 
-          path="/sign-up" 
+
+        <Route
+          path="/sign-up"
           element={
             <PublicRoute>
               <SignUpPage />
             </PublicRoute>
+          }
+        />
+
+
+        <Route 
+          path="/video-analysis" 
+          element={
+            <ProtectedRoute>
+              <VideoAnalysis />
+            </ProtectedRoute>
           } 
         />
 
 
-        {/* PROTECTED ROUTES - Require authentication */}
-      
+        {/* ONBOARDING ROUTE */}
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <OnboardingPage />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Add more protected routes here as needed */}
-        {/* 
-        <Route 
-          path="/performance" 
+        {/* PROTECTED ROUTES */}
+        <Route
+          path="/command-center"
           element={
             <ProtectedRoute>
-              <Performance />
+              <CommandCenter />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/audience" 
-          element={
-            <ProtectedRoute>
-              <Audience />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/market" 
-          element={
-            <ProtectedRoute>
-              <Market />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/quick-launch" 
-          element={
-            <ProtectedRoute>
-              <QuickLaunch />
-            </ProtectedRoute>
-          } 
-        />
-        */}
 
-        {/* FALLBACK - Redirect unknown routes to landing page */}
+        {/* Alias */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <CommandCenter />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/auto-create"
+          element={
+            <ProtectedRoute>
+              <AutoCreate />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Ad Surveillance */}
+        <Route
+          path="/ad-surveillance"
+          element={
+            <ProtectedRoute>
+              <AdSurveillance />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ NEW: Targeting Intelligence */}
+        <Route
+          path="/targeting_intel"
+          element={
+            <ProtectedRoute>
+              <TargetingIntel />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* FALLBACK */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

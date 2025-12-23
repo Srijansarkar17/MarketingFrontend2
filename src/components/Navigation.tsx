@@ -12,11 +12,6 @@ import {
   MobileNavMenu,
 } from './ui/resizable-navbar';
 
-interface NavItem {
-  name: string;
-  link: string;
-}
-
 const Navigation: React.FC = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -63,15 +58,14 @@ const Navigation: React.FC = () => {
     };
   }, []);
 
-  const navItems: NavItem[] = [
+  const navItems = [
     { name: 'Home', link: '/home' },
     { name: 'Command Center', link: '/command-center' },
-    { name: 'Performance', link: '/performance' },
-    { name: 'Audience Intel', link: '/audience' },
-    { name: 'Auto Create', link: '/auto-create' }
+    { name: 'Targeting Intel', link: '/targeting_intel' },
+    { name: 'Ad Surveillance', link: '/ad-surveillance' },
+    { name: 'Auto Create', link: '/auto-create' },
+    { name: 'Reverse Engineering', link: '/video-analysis'}
   ];
-
-  // Create a handler for each nav item if onItemClick doesn't pass the link
 
   const handleNavClick = (link: string) => {
     navigate(link);
@@ -92,13 +86,6 @@ const Navigation: React.FC = () => {
     navigate('/');
   };
 
-  // If NavItems component expects items with onClick handlers instead of onItemClick
-  // We need to transform our data structure
-  const transformedNavItems = navItems.map(item => ({
-    ...item,
-    onClick: () => navigate(item.link)
-  }));
-
   return (
     <Navbar>
       {/* Desktop Navigation */}
@@ -106,7 +93,8 @@ const Navigation: React.FC = () => {
         <NavbarLogo />
         {isLoggedIn && (
           <NavItems 
-            items={transformedNavItems}
+            items={navItems} 
+            onItemClick={(link) => navigate(link)}
           />
         )}
         <div className="flex items-center gap-4">
