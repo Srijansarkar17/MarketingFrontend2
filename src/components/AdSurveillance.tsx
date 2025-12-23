@@ -1,11 +1,11 @@
 // src/components/AdSurveillance.tsx
 import { useState, useEffect } from 'react'; // Added React import
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Activity, 
-  Target, 
-  Eye, 
+import {
+  TrendingUp,
+  TrendingDown,
+  Activity,
+  Target,
+  Eye,
   MousePointer,
   BarChart3,
   Filter,
@@ -43,7 +43,7 @@ const AdSurveillance = () => {
     dailyCount: number;
     error?: string;
   } | null>(null);
-  
+
   // Competitor modal state
   const [showAddCompetitorModal, setShowAddCompetitorModal] = useState(false);
   const [newCompetitor, setNewCompetitor] = useState<NewCompetitorInput>({
@@ -56,7 +56,7 @@ const AdSurveillance = () => {
   const [addingCompetitor, setAddingCompetitor] = useState(false);
   const [addCompetitorError, setAddCompetitorError] = useState<string | null>(null);
   const [addCompetitorSuccess, setAddCompetitorSuccess] = useState(false);
-  
+
   // Chart data state - removed unused setters since they're not needed
   const [spendTrendData] = useState<number[]>([26000, 19500, 13000, 6500, 0, 0, 0]);
   const [platformDistribution] = useState<PlatformSpendData[]>([
@@ -87,7 +87,7 @@ const AdSurveillance = () => {
     const result = await testDatabaseConnection();
     setDbStatus(result.connected ? 'connected' : 'disconnected');
     setConnectionInfo(result);
-    
+
     if (result.connected) {
       console.log('📊 Database Status:', {
         summaryMetrics: result.summaryCount,
@@ -106,11 +106,11 @@ const AdSurveillance = () => {
 
     setAddingCompetitor(true);
     setAddCompetitorError(null);
-    
+
     try {
       await addCompetitor(newCompetitor);
       setAddCompetitorSuccess(true);
-      
+
       // Reset form
       setNewCompetitor({
         name: '',
@@ -119,16 +119,16 @@ const AdSurveillance = () => {
         estimated_monthly_spend: 0,
         social_handles: {}
       });
-      
+
       // Close modal after 2 seconds
       setTimeout(() => {
         setShowAddCompetitorModal(false);
         setAddCompetitorSuccess(false);
       }, 2000);
-      
+
       // Refresh data to show new competitor
       await loadData();
-      
+
     } catch (error: any) {
       console.error('Error adding competitor:', error);
       setAddCompetitorError(error.message || 'Failed to add competitor. Please try again.');
@@ -154,7 +154,7 @@ const AdSurveillance = () => {
       await checkDatabaseStatus();
       await loadData();
     };
-    
+
     initialize();
   }, [selectedPeriod]);
 
@@ -226,7 +226,7 @@ const AdSurveillance = () => {
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-xl font-semibold text-gray-900">Add New Competitor</h3>
-                <button 
+                <button
                   onClick={() => {
                     setShowAddCompetitorModal(false);
                     resetCompetitorForm();
@@ -236,7 +236,7 @@ const AdSurveillance = () => {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              
+
               {addCompetitorSuccess ? (
                 <div className="text-center py-8">
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -254,7 +254,7 @@ const AdSurveillance = () => {
                       <p className="text-red-700 text-sm">{addCompetitorError}</p>
                     </div>
                   )}
-                  
+
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -263,13 +263,13 @@ const AdSurveillance = () => {
                       <input
                         type="text"
                         value={newCompetitor.name}
-                        onChange={(e) => setNewCompetitor({...newCompetitor, name: e.target.value})}
+                        onChange={(e) => setNewCompetitor({ ...newCompetitor, name: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="e.g., Nike Running"
                         disabled={addingCompetitor}
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Website Domain
@@ -277,13 +277,13 @@ const AdSurveillance = () => {
                       <input
                         type="text"
                         value={newCompetitor.domain}
-                        onChange={(e) => setNewCompetitor({...newCompetitor, domain: e.target.value})}
+                        onChange={(e) => setNewCompetitor({ ...newCompetitor, domain: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="e.g., nike.com"
                         disabled={addingCompetitor}
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Industry
@@ -291,13 +291,13 @@ const AdSurveillance = () => {
                       <input
                         type="text"
                         value={newCompetitor.industry}
-                        onChange={(e) => setNewCompetitor({...newCompetitor, industry: e.target.value})}
+                        onChange={(e) => setNewCompetitor({ ...newCompetitor, industry: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="e.g., Sportswear, E-commerce"
                         disabled={addingCompetitor}
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Estimated Monthly Ad Spend ($)
@@ -306,7 +306,7 @@ const AdSurveillance = () => {
                         type="number"
                         value={newCompetitor.estimated_monthly_spend || ''}
                         onChange={(e) => setNewCompetitor({
-                          ...newCompetitor, 
+                          ...newCompetitor,
                           estimated_monthly_spend: e.target.value ? parseInt(e.target.value) : 0
                         })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -314,7 +314,7 @@ const AdSurveillance = () => {
                         disabled={addingCompetitor}
                       />
                     </div>
-                    
+
                     <div className="pt-4 border-t border-gray-200">
                       <div className="flex justify-end space-x-3">
                         <button
@@ -363,11 +363,10 @@ const AdSurveillance = () => {
           </div>
           <div className="flex items-center space-x-4">
             {/* Connection Status */}
-            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
-              dbStatus === 'connected' 
-                ? 'bg-green-100 text-green-800 border border-green-200' 
+            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${dbStatus === 'connected'
+                ? 'bg-green-100 text-green-800 border border-green-200'
                 : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-            }`}>
+              }`}>
               {dbStatus === 'connected' ? (
                 <>
                   <Wifi className="w-3 h-3" />
@@ -410,7 +409,7 @@ const AdSurveillance = () => {
               <option value="30d">Last 30 days</option>
               <option value="90d">Last 90 days</option>
             </select>
-            <button 
+            <button
               onClick={checkDatabaseStatus}
               className="flex items-center px-4 py-2 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg transition-colors"
             >
@@ -426,11 +425,10 @@ const AdSurveillance = () => {
 
         {/* Database Info Banner */}
         {connectionInfo && (
-          <div className={`p-4 rounded-lg mb-4 ${
-            dbStatus === 'connected' 
-              ? 'bg-green-50 border border-green-200' 
+          <div className={`p-4 rounded-lg mb-4 ${dbStatus === 'connected'
+              ? 'bg-green-50 border border-green-200'
               : 'bg-yellow-50 border border-yellow-200'
-          }`}>
+            }`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {dbStatus === 'connected' ? (
@@ -445,16 +443,16 @@ const AdSurveillance = () => {
                   </>
                 )}
                 <span className="text-sm text-gray-600">
-                  {dbStatus === 'connected' 
+                  {dbStatus === 'connected'
                     ? `Found ${connectionInfo.summaryCount} summary records and ${connectionInfo.dailyCount} daily records`
                     : 'Add Supabase credentials to .env file for real data'
                   }
                 </span>
               </div>
               {dbStatus === 'disconnected' && (
-                <a 
-                  href="https://supabase.com" 
-                  target="_blank" 
+                <a
+                  href="https://supabase.com"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
                 >
@@ -659,7 +657,7 @@ const AdSurveillance = () => {
             </button>
           </div>
         </div>
-        
+
         <div className="divide-y divide-gray-100">
           {dailyMetrics.map((ad) => (
             <div key={ad.id} className="p-6 hover:bg-gray-50 transition-colors">
@@ -697,7 +695,7 @@ const AdSurveillance = () => {
 
               {/* Ad Body - Use description or similar field if available */}
               <p className="text-gray-600 mb-6">
-                {ad.description || `Ad campaign on ${ad.platform} targeting users interested in similar products`}
+                {`Ad campaign by ${ad.competitor_name} on ${ad.platform}`}
               </p>
 
               {/* Metrics Grid */}
@@ -728,14 +726,14 @@ const AdSurveillance = () => {
                   <p className="text-xs text-gray-500">industry avg: 2.1%</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Variants</p>
-                  <p className="font-semibold text-gray-900">{ad.variants || 0} creatives</p>
-                  <p className="text-xs text-gray-500">A/B testing</p>
+                  <p className="text-sm text-gray-500">Daily Impressions</p>
+                  <p className="font-semibold text-gray-900">{formatNumber(ad.daily_impressions)}</p>
+                  <p className="text-xs text-gray-500">estimated</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">A/B Tests</p>
-                  <p className="font-semibold text-gray-900">{ad.ab_tests || 0} active</p>
-                  <p className="text-xs text-gray-500">in progress</p>
+                  <p className="text-sm text-gray-500">CTR</p>
+                  <p className="font-semibold text-gray-900">{formatPercentage(ad.daily_ctr)}</p>
+                  <p className="text-xs text-gray-500">performance</p>
                 </div>
               </div>
 
