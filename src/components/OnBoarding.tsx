@@ -1,7 +1,12 @@
+// src/components/OnBoarding.tsx
 import React, { useState } from 'react';
 import { ChevronRight, Sparkles, Briefcase, Target } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const OnboardingPage = () => {
+  const navigate = useNavigate();
+  const { completeOnboarding } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({
     businessType: '',
@@ -65,7 +70,7 @@ const OnboardingPage = () => {
   const Icon = currentQuestion?.icon;
   const progress = ((currentStep + 1) / questions.length) * 100;
 
-  const handleOptionSelect = (option) => {
+  const handleOptionSelect = (option: string) => {
     const currentQuestionId = currentQuestion?.id;
     if (!currentQuestionId) return;
     
@@ -100,39 +105,29 @@ const OnboardingPage = () => {
     setError('');
 
     try {
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        setError('Authentication token not found. Please sign up again.');
-        return;
-      }
+      const result = await completeOnboarding(
+        answers.businessType,
+        answers.industry,
+        answers.goals
+      );
 
-      const response = await fetch('http://localhost:5003/complete-onboarding', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(answers)
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
+      if (result.success) {
         setTimeout(() => {
-          window.location.href = '/';
+          navigate('/command-center');
         }, 1000);
       } else {
-        setError(data.error || 'Failed to complete onboarding');
+        setError(result.error || 'Failed to complete onboarding');
       }
     } catch (err) {
       console.error('Onboarding error:', err);
-      setError('Network error. Please check your connection and try again.');
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleSkip = () => {
+    navigate('/command-center');
   };
 
   return (
@@ -248,7 +243,7 @@ const OnboardingPage = () => {
         {/* Skip Button */}
         <div className="text-center mt-6">
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={handleSkip}
             className="text-slate-700 hover:text-cyan-600 transition-colors text-sm font-bold underline underline-offset-4 hover:underline-offset-2 tracking-tight"
           >
             Skip for now
