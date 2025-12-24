@@ -1,6 +1,4 @@
-// src/App.tsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute, PublicRoute } from './components/ProtectedRoute';
 
 import CommandCenter from './pages/CommandCenter';
@@ -12,111 +10,114 @@ import AutoCreate from './pages/AutoCreate';
 import AdSurveillance from './components/AdSurveillance';
 import AdDetailPage from './pages/AdDetailPage';
 import VideoAnalysis from './pages/VideoAnalysis';
+
+
+/* ✅ NEW PAGE IMPORT */
 import TargetingIntel from './pages/targetingIntel';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          {/* LANDING PAGE - Public route */}
-          <Route path="/" element={<Home />} />
+    <Router>
+      <Routes>
+        {/* LANDING PAGE - Public route */}
+        <Route path="/" element={<Home />} />
 
-          {/* Ad Detail Page */}
-          <Route path="/ads/:id" element={<AdDetailPage />} />
+        {/* Ad Detail Page */}
+        <Route path="/ads/:id" element={<AdDetailPage />} />
 
-          {/* PUBLIC ROUTES */}
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <LoginPage />
-              </PublicRoute>
-            }
-          />
+        {/* PUBLIC ROUTES */}
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
 
-          <Route
-            path="/sign-up"
-            element={
-              <PublicRoute>
-                <SignUpPage />
-              </PublicRoute>
-            }
-          />
+        <Route
+          path="/sign-up"
+          element={
+            <PublicRoute>
+              <SignUpPage />
+            </PublicRoute>
+          }
+        />
 
-          <Route 
-            path="/video-analysis" 
-            element={
-              <ProtectedRoute>
-                <VideoAnalysis />
-              </ProtectedRoute>
-            } 
-          />
 
-          {/* ONBOARDING ROUTE */}
-          <Route
-            path="/onboarding"
-            element={
-              <ProtectedRoute>
-                <OnboardingPage />
-              </ProtectedRoute>
-            }
-          />
+        <Route 
+          path="/video-analysis" 
+          element={
+            <ProtectedRoute>
+              <VideoAnalysis />
+            </ProtectedRoute>
+          } 
+        />
 
-          {/* PROTECTED ROUTES */}
-          <Route
-            path="/command-center"
-            element={
-              <ProtectedRoute>
-                <CommandCenter />
-              </ProtectedRoute>
-            }
-          />
 
-          {/* Alias */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <CommandCenter />
-              </ProtectedRoute>
-            }
-          />
+        {/* ONBOARDING ROUTE */}
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <OnboardingPage />
+            </ProtectedRoute>
+          }
+        />
 
-          <Route
-            path="/auto-create"
-            element={
-              <ProtectedRoute>
-                <AutoCreate />
-              </ProtectedRoute>
-            }
-          />
+        {/* PROTECTED ROUTES */}
+        <Route
+          path="/command-center"
+          element={
+            <ProtectedRoute>
+              <CommandCenter />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Ad Surveillance */}
-          <Route
-            path="/ad-surveillance"
-            element={
-              <ProtectedRoute>
-                <AdSurveillance />
-              </ProtectedRoute>
-            }
-          />
+        {/* Alias */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <CommandCenter />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Targeting Intelligence */}
-          <Route
-            path="/targeting_intel"
-            element={
-              <ProtectedRoute>
-                <TargetingIntel />
-              </ProtectedRoute>
-            }
-          />
+        <Route
+          path="/auto-create"
+          element={
+            <ProtectedRoute>
+              <AutoCreate />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* FALLBACK */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+        {/* Ad Surveillance */}
+        <Route
+          path="/ad-surveillance"
+          element={
+            <ProtectedRoute>
+              <AdSurveillance />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ NEW: Targeting Intelligence */}
+        <Route
+          path="/targeting_intel"
+          element={
+            <ProtectedRoute>
+              <TargetingIntel />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* FALLBACK */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
 

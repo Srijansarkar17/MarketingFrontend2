@@ -1,31 +1,28 @@
-// src/components/LoginForm.tsx
 import { useState } from "react"
 import { cn } from "../lib/utils"
-import { Button } from "./ui/button"
+import { Button } from "../components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/card"
+} from "../components/ui/card"
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "./ui/field"
-import { Input } from "./ui/input"
+} from "../components/ui/field"
+import { Input } from "../components/ui/input"
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate()
-  const { login } = useAuth()
   const [formData, setFormData] = useState({
     email: "",
     password: ""
@@ -38,7 +35,7 @@ export function LoginForm({
       ...formData,
       [e.target.id]: e.target.value
     })
-    setError("")
+    setError("") // Clear error when user types
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,16 +44,32 @@ export function LoginForm({
     setIsLoading(true)
 
     try {
-      const result = await login(formData.email, formData.password)
+      const response = await fetch("http://localhost:5003/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
+      })
 
-      if (result.success) {
-        navigate("/command-center")
+      const data = await response.json()
+
+      if (data.success) {
+        // Store JWT token in localStorage
+        localStorage.setItem("token", data.token)
+        localStorage.setItem("user", JSON.stringify(data.user))
+        
+        // Redirect to dashboard or home page
+        navigate("/")
       } else {
-        setError(result.error || "Login failed. Please try again.")
+        setError(data.error || "Login failed. Please try again.")
       }
     } catch (err) {
       console.error("Login error:", err)
-      setError("An unexpected error occurred. Please try again.")
+      setError("Network error. Please check your connection and try again.")
     } finally {
       setIsLoading(false)
     }
@@ -98,6 +111,7 @@ export function LoginForm({
                 Or continue with
               </FieldSeparator>
 
+              {/* Error Message */}
               {error && (
                 <div className="p-3 rounded-lg bg-red-50 border border-red-200">
                   <p className="text-sm text-red-700">{error}</p>
