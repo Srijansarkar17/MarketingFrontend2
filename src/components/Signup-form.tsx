@@ -1,28 +1,31 @@
+// src/components/SignupForm.tsx
 import { useState } from "react"
 import { cn } from "../lib/utils"
-import { Button } from "../components/ui/button"
+import { Button } from "./ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card"
+} from "./ui/card"
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "../components/ui/field"
-import { Input } from "../components/ui/input"
+} from "./ui/field"
+import { Input } from "./ui/input"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate()
+  const { signup } = useAuth()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -37,7 +40,7 @@ export function SignupForm({
       ...formData,
       [e.target.id]: e.target.value
     })
-    setError("") // Clear error when user types
+    setError("")
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,34 +49,21 @@ export function SignupForm({
     setIsLoading(true)
 
     try {
-      const response = await fetch("http://localhost:5003/sign-up", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword
-        }),
-      })
+      const result = await signup(
+        formData.name,
+        formData.email,
+        formData.password,
+        formData.confirmPassword
+      )
 
-      const data = await response.json()
-
-      if (data.success) {
-        // Store JWT token in localStorage
-        localStorage.setItem("token", data.token)
-        localStorage.setItem("user", JSON.stringify(data.user))
-        
-        // Redirect to dashboard or home page
+      if (result.success) {
         navigate("/onboarding")
       } else {
-        setError(data.error || "Signup failed. Please try again.")
+        setError(result.error || "Signup failed. Please try again.")
       }
     } catch (err) {
       console.error("Signup error:", err)
-      setError("Network error. Please check your connection and try again.")
+      setError("An unexpected error occurred. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -115,7 +105,6 @@ export function SignupForm({
                 Or continue with
               </FieldSeparator>
               
-              {/* Error Message */}
               {error && (
                 <div className="p-3 rounded-lg bg-red-50 border border-red-200">
                   <p className="text-sm text-red-700">{error}</p>
